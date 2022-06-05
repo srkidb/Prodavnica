@@ -115,6 +115,21 @@ const corbe = [
   },
 ];
 
+const useCart = () => {
+  const state = {
+    cartItems: [],
+  };
+
+  return {
+    state: state,
+    addItemToCart: (item) => state.cartItems.push(item),
+    // removeItemFromCart:
+    emptyCart: () => state.cartItems = []
+  };
+};
+
+const myCart = useCart();
+
 function renderFoodGroup(list) {
   for (let i in list) {
     containerProducts.push(list[i]);
@@ -149,7 +164,11 @@ function renderFoodGroup(list) {
     const button = document.createElement("button");
     button.textContent = "Dodaj u korpu";
     button.setAttribute("id", `${i}`);
-    button.setAttribute("onclick", "dodajUKorpu()");
+    button.addEventListener("click", () => {
+      myCart.addItemToCart(list[i]);
+      renderCart();
+    });
+    // button.setAttribute("onclick", `addItemToCart(${list[i]})`);
     divButton.appendChild(button);
     divTextContainer.appendChild(divButton);
 
@@ -169,16 +188,16 @@ function renderFoodGroup(list) {
   }
 }
 
-const useCount = () => {
-    const state = {
-        count: 0
-    }
+const renderCart = () => {
+  const cartWrap = document.getElementById("product-container");
 
-    return {
-        state: state,
-        increaseCount: () => state.count = state.count + 1
-    }
-}
+  cartWrap.innerHTML = ""
+  myCart.state.cartItems.map((item) => {
+    cartWrap.appendChild(document.createTextNode("Cena: " + item.cena));
+  });
+
+//   Dovrsi funkciju render CART
+};
 
 const container = document.getElementById("product-container");
 container.setAttribute("class", "row");
@@ -204,12 +223,8 @@ dugmePlati.addEventListener("click", () => {
 
 const dugmeOtkazi = document.getElementById("otkazi");
 dugmeOtkazi.addEventListener("click", () => {
-  container.innerHTML = "";
-  while (containerProducts > 0) {
-    containerProducts.pop();
-  }
-  totalCena = 0;
-  kolicina = 0;
+    myCart.emptyCart();
+    renderCart();
 });
 
 const jelaSaRostilja = document.getElementById("jela-sa-rostilja");
