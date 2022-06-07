@@ -123,7 +123,12 @@ const useCart = () => {
   return {
     state: state,
     addItemToCart: (item) => state.cartItems.push(item),
-    // removeItemFromCart:
+    removeItemFromCart: (item) => {
+      let p = state.cartItems.indexOf(state.cartItems[item]);
+      if (p >= 0) {
+        state.cartItems.splice(p, 1);
+      }
+    },
     emptyCart: () => state.cartItems = []
   };
 };
@@ -188,16 +193,51 @@ function renderFoodGroup(list) {
   }
 }
 
+const removeButton = (item) => {
+  const cartRemoveButton = document.createElement('button');
+    cartRemoveButton.textContent = "Remove";
+    cartRemoveButton.setAttribute('class', 'btn btn-info');
+    cartRemoveButton.addEventListener('click', () => {
+      myCart.removeItemFromCart(item),
+        renderCart();
+      
+    });
+  return cartRemoveButton;
+}
+
+
+const cartWrap = document.getElementById("product-container");
+const productWrap = document.createElement('div');
+
+cartWrap.appendChild(productWrap);
 const renderCart = () => {
-  const cartWrap = document.getElementById("product-container");
-
-  cartWrap.innerHTML = ""
+  productWrap.innerHTML = ""
   myCart.state.cartItems.map((item) => {
-    cartWrap.appendChild(document.createTextNode("Cena: " + item.cena));
-  });
 
+    const nameWrap = document.createElement('div');
+    const name = document.createTextNode("Naziv: " + item.ime);
+    nameWrap.appendChild(name);
+    productWrap.appendChild(nameWrap);
+
+    const cenaWrap = document.createElement('div');
+    const cartCena = document.createTextNode("Naziv: " + item.cena);
+    cenaWrap.appendChild(cartCena);
+    productWrap.appendChild(cenaWrap);
+
+    const KolicinaWrap = document.createElement('div');
+    KolicinaWrap.innerHTML = "Kolicina: 1";
+    productWrap.appendChild(KolicinaWrap);
+
+    const buttonRemoveFromCart = document.createElement('div');
+    buttonRemoveFromCart.appendChild(removeButton(myCart.state.cartItems.indexOf(item)));
+    productWrap.appendChild(buttonRemoveFromCart);
+    
+    
+  });
+  
 //   Dovrsi funkciju render CART
 };
+
 
 const container = document.getElementById("product-container");
 container.setAttribute("class", "row");
@@ -257,60 +297,8 @@ jelaSalate.addEventListener("click", () => {
   renderFoodGroup(salate);
 });
 
-const clickCount = 0;
-const kliknutoDugme = 0;
-
 function dodajUKorpu() {
   const kliknutoDugme = event.target.id;
 
-  korpaDiv.setAttribute("class", "col-12");
-
-  const divNazivUKorpi = document.createElement("div");
-  divNazivUKorpi.setAttribute("class", "col-12");
-  const nazivUKorpi = containerProducts[kliknutoDugme].ime;
-  divNazivUKorpi.appendChild(document.createTextNode("Naziv: " + nazivUKorpi));
-  korpaDiv.appendChild(divNazivUKorpi);
-
-  const divCenaUKorpi = document.createElement("div");
-  divCenaUKorpi.setAttribute("class", "col-12 cena-proizvoda");
-  const cenaUKorpi = containerProducts[kliknutoDugme].cena;
-  divCenaUKorpi.appendChild(document.createTextNode("Cena: " + cenaUKorpi));
-  korpaDiv.appendChild(divCenaUKorpi);
-  ////////////////////////////////////////////////////////////////////////
-  const divKolicinaUKorpi = document.createElement("div");
-  divKolicinaUKorpi.setAttribute("class", "col-12");
-  divKolicinaUKorpi.innerHTML = "Količina: ";
-
-  const selectSubject = document.createElement("select");
-  selectSubject.setAttribute("id", "subject");
-  selectSubject.setAttribute("name", "subject");
-
-  for (let i = 1; i <= 5; i++) {
-    const selectOption = document.createElement("option");
-    selectOption.setAttribute("value", `${i}`);
-    selectOption.setAttribute("onclick", "priceChange()");
-    selectOption.innerHTML = i;
-    selectSubject.appendChild(selectOption);
-  }
-  divKolicinaUKorpi.appendChild(selectSubject);
-  korpaDiv.appendChild(divKolicinaUKorpi);
-  container.appendChild(korpaDiv);
-  console.log(containerProducts);
-}
-
-function priceChange() {
-  const divTotalPrice = document.createElement("div");
-
-  let allOptions = document.getElementById("subject");
-  let selectedOption = allOptions.options[allOptions.selectedIndex].value;
-  let cenaSelected = containerProducts[0].cena;
-  console.log(cenaSelected);
-
-  divTotalPrice.setAttribute("class", "col-12");
-  totalCena += cenaSelected * selectedOption;
-  divTotalPrice.appendChild(
-    document.createTextNode("Total Cena: " + totalCena)
-  );
-  console.log(divTotalPrice);
-  korpaDiv.appendChild(divTotalPrice);
+  
 }
